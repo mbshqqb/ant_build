@@ -1,0 +1,45 @@
+<project default="jar" name="use">
+    <property name="src.dir" value="src/main/java" />
+    <property name="classes.dir" value="out/classes" />
+    <property name="jar.dir" value="out/jar" />
+    <property name="jarname" value="helloplugin.jar" />
+    <!--1. 清空已有目录和文件 -->
+    <target name="clean">
+        <delete dir="${classes.dir}" />
+        <delete dir="${jar.dir}" />
+    </target>
+    <!--2. 初始化工作，如创建目录等 -->
+    <target name="init">
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${jar.dir}" />
+    </target>
+    <!--3. 编译 -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="on">
+            <compilerarg line="-encoding UTF-8" />
+        </javac>
+    </target>
+    <!--4. 打包jar文件 -->
+    <target name="jar" depends="compile">
+        <jar destfile="${jar.dir}/${jarname}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="com.zj.ant_plugin.HelloPlugin" />
+            </manifest>
+        </jar>
+    </target>
+    <target name="cp">
+        <copy todir="${basedir}/aa">
+            <fileset dir="src">
+            </fileset>
+        </copy>
+    </target>
+
+    <!--5. 自定义task-->
+    <taskdef  name="mycopy" classname="com.zj.ant_plugin.MyCopy" classpath="${classes.dir}" />
+    <target  name="test"  depends="compile">
+        <mycopy>
+            <rectangle x="100" wide="100" height="100" y="100"/>
+            <files dir="${basedir}"/>
+        </mycopy>
+    </target>
+</project>
